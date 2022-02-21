@@ -11,6 +11,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({extended: true}));
 app.use(methodOveride('_method'));
+app.use(express.static('public'))
 
 mongoose.connect('mongodb://localhost:27017/todoApp');
 const db = mongoose.connection;
