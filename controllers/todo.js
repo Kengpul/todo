@@ -8,6 +8,7 @@ module.exports.index = async (req, res) => {
 module.exports.createTodo = async (req, res) => {
     const todo = new Todo({todo: req.body.todo});
     await todo.save();
+    req.flash('success', 'Created a new todo!');
     res.redirect('/')
 }
 

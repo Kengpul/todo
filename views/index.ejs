@@ -20,6 +20,11 @@
         <h2>Monday</h2>
         <h3>February 2022</h3>
       </header>
+      <% if (success && success.length) { %>
+      <div class="alert alert-success w-25 text-center fixed-top" role="alert">
+        <%= success %>
+      </div>
+      <% } %>
       <div
         class="mb-3 d-flex flex-column justify-content-center align-items-center"
       >
