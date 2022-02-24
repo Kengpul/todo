@@ -4,10 +4,8 @@ const path = require('path');
 const mongoose = require('mongoose');
 const methodOveride = require('method-override');
 const ExpressError = require('./utils/ExpressError');
-const catchAsync = require ('./utils/catchAsync');
-const {validateTodo} = require('./middleware');
 
-const Todo = require('./models/todo');
+const todoRoutes = require('./routes/todo');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -23,19 +21,7 @@ db.once('open', () => {
     console.log('Database connected');
 });
 
-app.get('/', catchAsync(async (req, res) => {
-    const todos = await Todo.find({});
-    res.render('index', {todos});
-}))
-app.post('/todo', validateTodo, catchAsync(async (req, res) => {
-    const todo = new Todo({todo: req.body.todo});
-    await todo.save();
-    res.redirect('/')
-}))
-app.delete('/todo/:id', catchAsync(async (req, res) => {
-    await Todo.findByIdAndDelete(req.params.id);
-    res.redirect('/')
-}))
+app.use('/', todoRoutes);
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404))
