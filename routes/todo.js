@@ -6,8 +6,8 @@ const {validateTodo, isLoggedIn} = require('../middleware');
 
 router.get('/', isLoggedIn, catchAsync(todo.index));
 
-router.post('/todo', isLoggedIn, validateTodo, catchAsync(todo.createTodo));
+router.post('/', isLoggedIn, validateTodo, catchAsync(todo.createTodo));
 
-router.delete('/todo/:id', isLoggedIn, catchAsync(todo.deleteTodo));
+router.delete('/:id', isLoggedIn, catchAsync(todo.deleteTodo));
 
 module.exports = router;
