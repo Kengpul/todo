@@ -6,7 +6,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-    }
+    },
+
+    todos: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Todo',
+        },
+    ],
 });
 
 UserSchema.plugin(passportLocalMongoose);

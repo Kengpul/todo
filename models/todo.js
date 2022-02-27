@@ -6,6 +6,10 @@ const todoSchema = new mongoose.Schema({
         type: String,
         required: [true, 'cannot be blank'],
     },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
 })
 
 module.exports = mongoose.model("Todo", todoSchema);
