@@ -10,6 +10,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/users');
 const ejsMate = require('ejs-mate');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 
 const todoRoutes = require('./routes/todo');
 const userRoutes = require('./routes/users');
@@ -34,6 +36,7 @@ const sessionConfig = {
     secret: 'thisisasecretkey',
     resave: false,
     saveUninitialized: true,
+    secure: true,
     cookie: {
         httpOnly: true,
         expires: Date.now() * 1000 * 60 * 60 * 24 * 7,
@@ -43,6 +46,16 @@ const sessionConfig = {
 
 app.use(session(sessionConfig));
 app.use(flash());
+app.use(mongoSanitize());
+app.use(helmet());
+
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            "script-src": ["'self'", "https://cdn.jsdelivr.net/"],
+        },
+    })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
