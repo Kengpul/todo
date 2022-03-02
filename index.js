@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
+
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -12,11 +16,14 @@ const User = require('./models/users');
 const ejsMate = require('ejs-mate');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
+const MongoDBStore = require('connect-mongo');
 
 const todoRoutes = require('./routes/todo');
 const userRoutes = require('./routes/users');
 
-mongoose.connect('mongodb://localhost:27017/todoApp');
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/todoApp';
+
+mongoose.connect(dbUrl);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
@@ -31,9 +38,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOveride('_method'));
 app.use(express.static('public'));
 
+const secret = process.env.SECRET || 'thisisasecretkey';
+const store = MongoDBStore.create({
+    mongoUrl: dbUrl,
+    secret,
+    touchAfter: 24 * 60 * 60
+})
+
 const sessionConfig = {
+    store,
     name: 'session',
-    secret: 'thisisasecretkey',
+    secret,
     resave: false,
     saveUninitialized: true,
     secure: true,
@@ -88,6 +103,7 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { err });
 })
 
-app.listen(3000, () => {
-    console.log('Port 300');
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Port on ${port}`);
 })
